@@ -4,9 +4,9 @@ WITH A AS (
 	SELECT
 		pc.category_name,
 		ct.first_name,
-        ct.last_name,
+        	ct.last_name,
 		ROUND(SUM(oi.unit_price*oi.quantity),2) AS revenue,
-        ct.phone,
+        	ct.phone,
 		rank () Over (Partition by pc.category_name order by SUM(oi.unit_price*oi.quantity) DESC) AS rank_rev
 	FROM order_items oi
 	JOIN orders od ON od.order_id = oi.order_id
@@ -28,7 +28,7 @@ WHERE A.rank_rev = 1
 --Query revenue by customer's name and show website, 3 product's name have highest revenue
 WITH T1 AS (
 	SELECT
-        CONCAT(ct.first_name, ' ', ct.last_name) as customer_name,
+        	CONCAT(ct.first_name, ' ', ct.last_name) as customer_name,
 		cus.website,
 		prd.product_name,
 		ROUND(SUM(oi.unit_price*oi.quantity),2) AS revenue,
@@ -56,7 +56,7 @@ ORDER BY T1.customer_name
 with TS as(
     SELECT
 	pc.category_name,
-    pc.category_ID,
+    	pc.category_ID,
 	ROUND(SUM(oi.unit_price*oi.quantity),2) AS revenue_category
 	FROM order_items oi
 	JOIN products pd ON pd.Product_ID = oi.Product_ID
@@ -81,19 +81,19 @@ ORDER BY TS.category_name ASC, percent_rev DESC
 --Find new customer in month, If the customer has purchased in the previous months, remove it from the list, show revenue of new customer
 WITH A AS (
 	SELECT
-        YEAR(od.Order_Date) AS year,
-        MONTH(od.ORDER_DATE) AS month,
+        	YEAR(od.Order_Date) AS year,
+        	MONTH(od.ORDER_DATE) AS month,
 		CONCAT(MONTH(od.Order_Date),'-',YEAR(od.Order_Date)) AS month_year,
 		od.Customer_ID,
-        ct.first_name,
-        ct.last_name,
+        	ct.first_name,
+        	ct.last_name,
 		ROUND(SUM(oi.unit_price*oi.quantity),2) AS revenue
 	FROM orders od
 	JOIN order_items oi  ON oi.order_ID = od.order_ID
-    JOIN customers cus on cus.customer_id = od.customer_id
-    JOIN contacts ct on ct.customer_id = cus.customer_id
+   	JOIN customers cus on cus.customer_id = od.customer_id
+   	JOIN contacts ct on ct.customer_id = cus.customer_id
 	WHERE
-		od.Customer_ID NOT IN (
+	od.Customer_ID NOT IN (
 			SELECT DISTINCT customer_ID
 			FROM orders od2
 			WHERE CONCAT(MONTH(od.Order_Date),'-',YEAR(od.Order_Date)) < CONCAT(MONTH(od2.Order_Date),'-',YEAR(od2.Order_Date))
